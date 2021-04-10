@@ -5,8 +5,8 @@ import com.javitoro.superheroes.exception.ResourceNotFoundException;
 import com.javitoro.superheroes.service.SuperheroService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "superhero", description = "the superhero API")
 public class SuperheroController {
 
-    @Autowired
     private SuperheroService superheroService;
+
+    public SuperheroController(SuperheroService superheroService) {
+        this.superheroService = superheroService;
+    }
 
     @Operation(summary = "Get all superheroes")
     @GetMapping("/all")
@@ -39,6 +42,7 @@ public class SuperheroController {
         return superheroService.getSuperheroesByName(name);
     }
 
+    @Secured("ROLE_ADMIN")
     @Operation(summary = "Add a new superhero")
     @PostMapping("/add")
     public @ResponseBody
@@ -46,6 +50,7 @@ public class SuperheroController {
         return superheroService.addNewSuperhero(superhero);
     }
 
+    @Secured("ROLE_ADMIN")
     @Operation(summary = "Update the name of a superhero using its id")
     @PutMapping("/rename/{id}/{name}")
     public @ResponseBody
@@ -53,6 +58,7 @@ public class SuperheroController {
         return superheroService.renameSuperheroById(id, name);
     }
 
+    @Secured("ROLE_ADMIN")
     @Operation(summary = "Delete a superhero by its id")
     @DeleteMapping("/delete/{id}")
     public @ResponseBody
