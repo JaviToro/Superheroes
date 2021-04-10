@@ -4,7 +4,6 @@ import com.javitoro.superheroes.aop.LogExecutionTime;
 import com.javitoro.superheroes.domain.Superhero;
 import com.javitoro.superheroes.exception.ResourceNotFoundException;
 import com.javitoro.superheroes.repository.SuperheroRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,8 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class SuperheroService {
 
-    @Autowired
     private SuperheroRepository superheroRepository;
+
+    public SuperheroService(SuperheroRepository superheroRepository) {
+        this.superheroRepository = superheroRepository;
+    }
 
     @LogExecutionTime
     public Iterable<Superhero> getAllSuperheroes() {
@@ -30,6 +32,7 @@ public class SuperheroService {
         return superheroRepository.findByNameContaining(name);
     }
 
+    @Transactional()
     public Superhero addNewSuperhero(Superhero superhero) {
         return superheroRepository.save(superhero);
     }
